@@ -1,0 +1,13 @@
+COLUMNS:
+  vendor_id: object
+  rate_code: int64
+  passenger_count: int64
+  trip_time_in_secs: int64
+  trip_distance: float64
+  payment_type: object
+  fare_amount: float64
+
+
+TARGET_COLUMN:
+  name: fare_amount
+  
