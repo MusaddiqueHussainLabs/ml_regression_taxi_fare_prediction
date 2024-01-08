@@ -1,6 +1,6 @@
 from taxi_fare_prediction.core.constants import constants
 from taxi_fare_prediction.utils.helper_functions import read_yaml, create_directories
-from taxi_fare_prediction.schemas.config_schema import DataIngestionConfig, DataValidationConfig, DataTransformationConfig, ModelTrainerConfig
+from taxi_fare_prediction.schemas.config_schema import DataIngestionConfig, DataValidationConfig, DataTransformationConfig, DataPreProcessingConfig, ModelTrainerConfig, ModelEvaluationConfig
 
 class ConfigurationManager:
     def __init__(self,
@@ -42,6 +42,20 @@ class ConfigurationManager:
 
         return data_validation_config
     
+    def get_data_preprocessing_config(self) -> DataPreProcessingConfig:
+        config = self.config.data_preprocessing
+        schema = self.schema.TARGET_COLUMN
+        
+        create_directories([config.root_dir])
+
+        data_preprocessing_config = DataPreProcessingConfig(
+            root_dir=config.root_dir,
+            input_file_path = config.input_file_path,
+            target_column = schema.name
+        )
+
+        return data_preprocessing_config
+    
     def get_data_transformation_config(self) -> DataTransformationConfig:
         config = self.config.data_transformation
 
@@ -73,3 +87,23 @@ class ConfigurationManager:
         )
 
         return model_trainer_config
+    
+    def get_model_evaluation_config(self) -> ModelEvaluationConfig:
+        config = self.config.model_evaluation
+        params = self.params.ElasticNet
+        schema =  self.schema.TARGET_COLUMN
+
+        create_directories([config.root_dir])
+
+        model_evaluation_config = ModelEvaluationConfig(
+            root_dir=config.root_dir,
+            test_data_path=config.test_data_path,
+            model_path = config.model_path,
+            all_params=params,
+            metric_file_name = config.metric_file_name,
+            target_column = schema.name,
+            mlflow_uri="http://127.0.0.1:8080",
+           
+        )
+
+        return model_evaluation_config

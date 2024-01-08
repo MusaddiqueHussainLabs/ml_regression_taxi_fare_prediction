@@ -4,6 +4,7 @@ from taxi_fare_prediction.core.constants import constants
 from taxi_fare_prediction.core.config import ConfigurationManager
 from taxi_fare_prediction.data.data_ingestion import DataIngestion
 from taxi_fare_prediction.data.data_validation import DataValiadtion
+from taxi_fare_prediction.data.data_preprocessing import DataPreProcessing
 from taxi_fare_prediction.data.data_transformation import DataTransformation
 
 class DataIngestionTrainingPipeline:
@@ -26,6 +27,17 @@ class DataValidationTrainingPipeline:
         data_validation_config = config.get_data_validation_config()
         data_validation = DataValiadtion(config=data_validation_config)
         data_validation.validate_all_columns()
+
+
+class DataPreProcessTrainingPipeline:
+    def __init__(self):
+        pass
+
+    def main(self):
+        config = ConfigurationManager()
+        data_preprocessing_config = config.get_data_preprocessing_config()
+        data_preprocessing = DataPreProcessing(config=data_preprocessing_config)
+        
 
 
 class DataTransformationTrainingPipeline:

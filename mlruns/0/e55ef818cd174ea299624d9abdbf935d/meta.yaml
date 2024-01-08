@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/MusaddiqueHussainLabs/ml_regression_taxi_fare_prediction/mlruns/0/e55ef818cd174ea299624d9abdbf935d/artifacts
+end_time: 1704738260052
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e55ef818cd174ea299624d9abdbf935d
+run_name: inquisitive-bat-459
+run_uuid: e55ef818cd174ea299624d9abdbf935d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1704738257324
+status: 3
+tags: []
+user_id: musad

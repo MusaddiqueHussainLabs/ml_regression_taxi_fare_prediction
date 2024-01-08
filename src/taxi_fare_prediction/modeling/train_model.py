@@ -3,7 +3,10 @@ import os
 from taxi_fare_prediction import logger
 from sklearn.linear_model import ElasticNet
 import joblib
+from taxi_fare_prediction.core.config import ConfigurationManager
 from taxi_fare_prediction.schemas.config_schema import ModelTrainerConfig
+from taxi_fare_prediction.data.data_preprocessing import DataPreProcessing
+from taxi_fare_prediction.data.data_transformation import DataTransformation
 
 
 class ModelTrainer:
@@ -12,18 +15,29 @@ class ModelTrainer:
 
     
     def train(self):
-        train_data = pd.read_csv(self.config.train_data_path)
-        test_data = pd.read_csv(self.config.test_data_path)
 
+        config = ConfigurationManager()
+        data_preprocessing_config = config.get_data_preprocessing_config()
+        data_preprocessing = DataPreProcessing(config=data_preprocessing_config)
 
-        train_x = train_data.drop([self.config.target_column], axis=1)
-        test_x = test_data.drop([self.config.target_column], axis=1)
-        train_y = train_data[[self.config.target_column]]
-        test_y = test_data[[self.config.target_column]]
+        data = data_preprocessing.load_data()
 
+        columns_to_check = [self.config.target_column]
+        data = data_preprocessing.remove_outliers(data, columns_to_check)
 
-        lr = ElasticNet(alpha=self.config.alpha, l1_ratio=self.config.l1_ratio, random_state=42)
-        lr.fit(train_x, train_y)
+        X, y = data_preprocessing.split_X_y(data)
 
-        joblib.dump(lr, os.path.join(self.config.root_dir, self.config.model_name))
+        data_transformation_config = config.get_data_transformation_config()
+        data_transformation = DataTransformation(config=data_transformation_config)
+
+        X_train, X_test, y_train, y_test = data_transformation.split_train_test(X, y, test_size=0.2, random_state=42)
+
+        model = data_transformation.create_pipeline()
+        model.fit(X_train, y_train)
+
+        joblib.dump(model, os.path.join(self.config.root_dir, self.config.model_name))
+
+        return model, X_test, y_test
+
+        
 
