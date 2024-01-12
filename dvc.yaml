@@ -1,8 +1,0 @@
-stages:
-  data_ingestion:
-    cmd: python src/taxi_fare_prediction/pipelines/data_pipeline.py
-    deps:
-      - src/taxi_fare_prediction/pipelines/data_pipeline.py
-      - src/taxi_fare_prediction/core/config.yaml
-    outs:
-      - data/raw/taxi-fare-full.csv
