@@ -1,5 +1,6 @@
 from pathlib import Path
 from taxi_fare_prediction import logger
+from taxi_fare_prediction.utils.custom_exceptions import CustomJSONError
 from taxi_fare_prediction.core.constants import constants
 from taxi_fare_prediction.core.config import ConfigurationManager
 from taxi_fare_prediction.data.data_ingestion import DataIngestion
@@ -57,7 +58,11 @@ class DataTransformationTrainingPipeline:
                 data_transformation.train_test_spliting()
 
             else:
-                raise Exception("You data schema is not valid")
+                raise CustomJSONError("500","You data schema is not valid")
 
+        except CustomJSONError as e:
+            logger.error(f"Custom JSON Error: {e.to_json()}")
+            return e.to_json()
+        
         except Exception as e:
             print(e)
