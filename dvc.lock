@@ -1,0 +1,18 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/taxi_fare_prediction/pipelines/data_pipeline.py
+    deps:
+    - path: src/taxi_fare_prediction/core/config.yaml
+      hash: md5
+      md5: a774e2cf61642517ff75af2f7df00c15
+      size: 1119
+    - path: src/taxi_fare_prediction/pipelines/data_pipeline.py
+      hash: md5
+      md5: debf373562958b5454d1e33e679804e9
+      size: 2376
+    outs:
+    - path: data/raw/taxi-fare-full.csv
+      hash: md5
+      md5: f684da89972733a3e8b7df4f8a30db2a
+      size: 5122479
