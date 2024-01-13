@@ -1,6 +1,6 @@
 pandas 
 mlflow
-dvc
+dvc[all]
 numpy
 scikit-learn
 matplotlib
