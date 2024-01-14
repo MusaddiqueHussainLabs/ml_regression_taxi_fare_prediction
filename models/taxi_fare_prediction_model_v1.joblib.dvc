@@ -1,0 +1,5 @@
+outs:
+- md5: 5bd0f43a9e30833553694d2b2695573a
+  size: 4309
+  hash: md5
+  path: taxi_fare_prediction_model_v1.joblib
