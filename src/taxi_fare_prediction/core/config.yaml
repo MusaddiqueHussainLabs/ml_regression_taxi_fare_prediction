@@ -23,7 +23,7 @@ data_preprocessing:
   input_file_path: data/raw/taxi-fare-full.csv
 
 model_trainer:
-  root_dir: models/trained_models
+  root_dir: models
   train_data_path: data/processed/taxi-fare-train.csv
   test_data_path: data/processed/taxi-fare-test.csv
   model_name: taxi_fare_prediction_model_v1.joblib
@@ -31,5 +31,5 @@ model_trainer:
 model_evaluation:
   root_dir: reports/evaluation_metrics
   test_data_path: data/processed/taxi-fare-test.csv
-  model_path: models/trained_models/taxi_fare_prediction_model_v1.joblib
+  model_path: models/taxi_fare_prediction_model_v1.joblib
   metric_file_name: reports/evaluation_metrics/taxi_fare_prediction_metrics.json

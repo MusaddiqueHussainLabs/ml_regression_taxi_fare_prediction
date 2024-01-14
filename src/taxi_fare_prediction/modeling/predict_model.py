@@ -8,7 +8,7 @@ from taxi_fare_prediction import logger
 
 class PredictionPipeline:
     def __init__(self):
-        self.model = joblib.load(Path('models/trained_models/taxi_fare_prediction_model_v1.joblib'))
+        self.model = joblib.load(Path('models/taxi_fare_prediction_model_v1.joblib'))
 
     
     def predict(self, data):
