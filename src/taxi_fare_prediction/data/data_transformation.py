@@ -70,6 +70,7 @@ class DataTransformation:
 
         model = Pipeline(steps=[
             ('preprocessor', preprocessor),
-            ('Random Forest', RandomForestRegressor())
+            # ('Random Forest', RandomForestRegressor())
+            ('regressor', SGDRegressor(max_iter=1000, tol=1e-3))
         ])
         return model
