@@ -6,11 +6,13 @@ import mlflow
 import mlflow.sklearn
 import numpy as np
 import joblib
+import json
 from taxi_fare_prediction.core.config import ModelEvaluationConfig
 from taxi_fare_prediction.utils.helper_functions import save_json
 from taxi_fare_prediction.core.config import ConfigurationManager
 from taxi_fare_prediction.data.data_preprocessing import DataPreProcessing
 from pathlib import Path
+from box import ConfigBox
 
 
 class ModelEvaluation:
@@ -18,11 +20,18 @@ class ModelEvaluation:
         self.config = config
 
     
-    def eval_metrics(self,actual, pred):
+    def eval_metrics(self, model_name, actual, pred):
         rmse = np.sqrt(mean_squared_error(actual, pred))
         mae = mean_absolute_error(actual, pred)
+        mse = mean_squared_error(actual, pred)
         r2 = r2_score(actual, pred)
-        return rmse, mae, r2
+
+        # Update eval.json
+        metrics = {"mae": mae, "mse": mse, "rmse": rmse, "r2": r2}
+        with open(f"{self.config.root_dir}/eval_{model_name}.json", "w") as json_file:
+            json.dump(metrics, json_file)
+
+        return ConfigBox(metrics)
     
 
     def log_into_mlflow(self):

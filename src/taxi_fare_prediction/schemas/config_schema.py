@@ -36,8 +36,10 @@ class ModelTrainerConfig:
     train_data_path: Path
     test_data_path: Path
     model_name: str
-    alpha: float
-    l1_ratio: float
+    eval_root_dir: Path
+    all_models_params: dict
+    # alpha: float
+    # l1_ratio: float
     target_column: str    
 
 @dataclass(frozen=True)
@@ -49,3 +51,8 @@ class ModelEvaluationConfig:
     metric_file_name: Path
     target_column: str
     mlflow_uri: str
+
+@dataclass(frozen=True)
+class ExperimentManagerConfig:
+    mlflow_uri: str
+    all_params: dict

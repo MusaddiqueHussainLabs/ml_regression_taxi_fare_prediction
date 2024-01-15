@@ -9,6 +9,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.linear_model import SGDRegressor
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression, Ridge
 
 
 class DataTransformation:
@@ -74,3 +75,41 @@ class DataTransformation:
             ('regressor', SGDRegressor(max_iter=1000, tol=1e-3))
         ])
         return model
+    
+    def create_model_pipelines(self, preprocessor):
+
+        linear_reg_pipeline = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('regressor', LinearRegression())
+        ])
+
+        ridge_reg_pipeline = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('regressor', Ridge())
+        ])
+
+        random_forest_pipeline = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('regressor', RandomForestRegressor())
+        ])
+
+        return {
+            'Linear Regression': linear_reg_pipeline,
+            'Ridge Regression': ridge_reg_pipeline,
+            'Random Forest': random_forest_pipeline
+        }
+
+    def get_preprocessor(self, numeric_features, categorical_features):
+        numeric_transformer = Pipeline(steps=[
+            ('scaler', StandardScaler())
+        ])
+
+        categorical_transformer = Pipeline(steps=[
+            ('onehot', OneHotEncoder())
+        ])
+
+        return ColumnTransformer(
+            transformers=[
+                ('num', numeric_transformer, numeric_features),
+                ('cat', categorical_transformer, categorical_features)
+            ])

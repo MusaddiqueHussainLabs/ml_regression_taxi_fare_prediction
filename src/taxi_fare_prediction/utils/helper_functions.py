@@ -124,3 +124,9 @@ def get_size(path: Path) -> str:
     """
     size_in_kb = round(os.path.getsize(path)/1024)
     return f"~ {size_in_kb} KB"
+
+@ensure_annotations
+def read_params_from_file(model_name):
+    with open('src/taxi_fare_prediction/core/params.yaml', 'r') as file:
+        params = yaml.safe_load(file)
+    return params.get(model_name, {})

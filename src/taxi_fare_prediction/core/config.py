@@ -1,6 +1,6 @@
 from taxi_fare_prediction.core.constants import constants
 from taxi_fare_prediction.utils.helper_functions import read_yaml, create_directories
-from taxi_fare_prediction.schemas.config_schema import DataIngestionConfig, DataValidationConfig, DataTransformationConfig, DataPreProcessingConfig, ModelTrainerConfig, ModelEvaluationConfig
+from taxi_fare_prediction.schemas.config_schema import DataIngestionConfig, DataValidationConfig, DataTransformationConfig, DataPreProcessingConfig, ModelTrainerConfig, ModelEvaluationConfig, ExperimentManagerConfig
 
 class ConfigurationManager:
     def __init__(self,
@@ -70,7 +70,7 @@ class ConfigurationManager:
 
     def get_model_trainer_config(self) -> ModelTrainerConfig:
         config = self.config.model_trainer
-        params = self.params.ElasticNet
+        params = self.params
         schema =  self.schema.TARGET_COLUMN
 
         create_directories([config.root_dir])
@@ -80,8 +80,10 @@ class ConfigurationManager:
             train_data_path = config.train_data_path,
             test_data_path = config.test_data_path,
             model_name = config.model_name,
-            alpha = params.alpha,
-            l1_ratio = params.l1_ratio,
+            eval_root_dir = config.eval_root_dir,
+            all_models_params = params,
+            # alpha = params.alpha,
+            # l1_ratio = params.l1_ratio,
             target_column = schema.name
             
         )
@@ -90,7 +92,7 @@ class ConfigurationManager:
     
     def get_model_evaluation_config(self) -> ModelEvaluationConfig:
         config = self.config.model_evaluation
-        params = self.params.ElasticNet
+        params = self.params
         schema =  self.schema.TARGET_COLUMN
 
         create_directories([config.root_dir])
@@ -107,3 +109,14 @@ class ConfigurationManager:
         )
 
         return model_evaluation_config
+    
+    def get_experiment_manager_config(self) -> ExperimentManagerConfig:
+        params = self.params
+
+        experiment_manager_config = ExperimentManagerConfig(
+            
+            mlflow_uri="https://dagshub.com/MusaddiqueHussainLabs/ml_regression_taxi_fare_prediction.mlflow",
+            all_params=params
+        )
+
+        return experiment_manager_config
