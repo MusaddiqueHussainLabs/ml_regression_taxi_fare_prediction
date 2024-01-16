@@ -88,7 +88,8 @@ class ModelTrainer:
                 best_metrics = metrics
                 best_model = model_pipeline
 
-        dump(best_model, os.path.join(self.config.root_dir, f"taxi_fare_{user_friendly_model_name}.joblib"))                    
+        #not saving in project dir, will modify to track with DVC
+        # dump(best_model, os.path.join(self.config.root_dir, f"taxi_fare_{user_friendly_model_name}.joblib"))                    
 
         return best_model, X_test, y_test
 

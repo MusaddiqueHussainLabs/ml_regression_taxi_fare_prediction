@@ -35,15 +35,15 @@ import pandas as pd
 #         logger.exception(e)
 #         raise e
 
-STAGE_NAME = "Model Trainer stage"
-try:
-   logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<") 
-   data_ingestion = ModelTrainerTrainingPipeline()
-   data_ingestion.main()
-   logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
-except Exception as e:
-        logger.exception(e)
-        raise e
+# STAGE_NAME = "Model Trainer stage"
+# try:
+#    logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<") 
+#    data_ingestion = ModelTrainerTrainingPipeline()
+#    data_ingestion.main()
+#    logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
+# except Exception as e:
+#         logger.exception(e)
+#         raise e
 
 
 # STAGE_NAME = "Model evaluation stage"
@@ -57,15 +57,15 @@ except Exception as e:
 #         raise e
 
 
-# sample_data = {
-#     'vendor_id': ['VTS'],
-#     'rate_code': [1],
-#     'passenger_count': [1],
-#     'trip_time_in_secs': [1140],
-#     'trip_distance': [3.75],
-#     'payment_type': ['CRD']
-# }
-# sample_df = pd.DataFrame(sample_data)
-# prediction_pipeline = PredictionPipeline()
-# prediction_result = prediction_pipeline.predict(sample_df)
-# print(prediction_result)
+sample_data = {
+    'vendor_id': ['VTS'],
+    'rate_code': [1],
+    'passenger_count': [1],
+    'trip_time_in_secs': [1140],
+    'trip_distance': [3.75],
+    'payment_type': ['CRD']
+}
+sample_df = pd.DataFrame(sample_data)
+prediction_pipeline = PredictionPipeline()
+prediction_result = prediction_pipeline.predict(sample_df)
+print(prediction_result)

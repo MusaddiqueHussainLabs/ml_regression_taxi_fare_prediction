@@ -9,8 +9,6 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.linear_model import SGDRegressor, LinearRegression, Ridge, Lasso, ElasticNet
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.svm import SVR
-from sklearn.neighbors import KNeighborsRegressor
 
 
 class DataTransformation:
@@ -64,16 +62,6 @@ class DataTransformation:
             ('regressor', GradientBoostingRegressor())
         ])
 
-        svr_pipeline = Pipeline(steps=[
-            ('preprocessor', preprocessor),
-            ('regressor', SVR())
-        ])
-
-        knn_pipeline = Pipeline(steps=[
-            ('preprocessor', preprocessor),
-            ('regressor', KNeighborsRegressor())
-        ])
-
         model_pipelines = {
             'LinearRegression': linear_reg_pipeline,
             'Ridge': ridge_reg_pipeline,
@@ -81,9 +69,7 @@ class DataTransformation:
             'SGDRegressor': sgd_reg_pipeline,
             'ElasticNet': elastic_net_pipeline,
             'RandomForestRegressor': random_forest_pipeline,
-            'GradientBoostingRegressor': gradient_boosting_reg_pipeline,
-            'SVR': svr_pipeline,
-            'KNeighborsRegressor': knn_pipeline
+            'GradientBoostingRegressor': gradient_boosting_reg_pipeline
         }
 
         return model_pipelines
