@@ -29,12 +29,8 @@ model_trainer:
   model_name: taxi_fare_model.joblib
   eval_root_dir: reports/evaluation_metrics
 
-
 model_evaluation:
   root_dir: reports/evaluation_metrics
   test_data_path: data/processed/taxi-fare-test.csv
   model_path: models/taxi_fare_model.joblib
   metric_file_name: reports/evaluation_metrics/taxi_fare_prediction_metrics.json
-
-experiment_tracking:
-  tracking_uri: 

@@ -9,4 +9,3 @@ class AppConstants(BaseSettings):
     STATUS_FILE_PATH: Path =  Path("data/interim/status.txt")
 
 constants =    AppConstants()
-

@@ -38,8 +38,7 @@ class ModelTrainerConfig:
     model_name: str
     eval_root_dir: Path
     all_models_params: dict
-    # alpha: float
-    # l1_ratio: float
+    all_schema: dict
     target_column: str    
 
 @dataclass(frozen=True)
