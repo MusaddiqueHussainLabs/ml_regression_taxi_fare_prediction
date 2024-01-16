@@ -7,7 +7,15 @@ COLUMNS:
   payment_type: object
   fare_amount: float64
 
-
 TARGET_COLUMN:
   name: fare_amount
   
+NUMERIC_FEATURES:
+  passenger_count: passenger_count
+  trip_time_in_secs: trip_time_in_secs
+  trip_distance: trip_distance
+
+CATEGORICAL_FEATURES:
+  vendor_id:  vendor_id
+  rate_code:  rate_code
+  payment_type: payment_type

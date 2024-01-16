@@ -7,39 +7,15 @@ from taxi_fare_prediction.schemas.config_schema import DataTransformationConfig
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.linear_model import SGDRegressor
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.linear_model import SGDRegressor, LinearRegression, Ridge, Lasso, ElasticNet
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.svm import SVR
+from sklearn.neighbors import KNeighborsRegressor
 
 
 class DataTransformation:
     def __init__(self, config: DataTransformationConfig):
         self.config = config
-
-    
-    ## Note: You can add different data transformation techniques such as Scaler, PCA and all
-    #You can perform all kinds of EDA in ML cycle here before passing this data to the model
-
-    # I am only adding train_test_spliting cz this data is already cleaned up
-
-
-    # def train_test_spliting(self):
-    #     data = pd.read_csv(self.config.input_file_path)
-
-    #     # Split the data into training and test sets. (0.75, 0.25) split.
-    #     train, test = train_test_split(data)
-
-    #     train.to_csv(os.path.join(self.config.root_dir, "taxi-fare-train.csv"),index = False)
-    #     test.to_csv(os.path.join(self.config.root_dir, "taxi-fare-test.csv"),index = False)
-
-
-
-    #     logger.info("Splited data into training and test sets")
-    #     logger.info(train.shape)
-    #     logger.info(test.shape)
-
-    #     print(train.shape)
-    #     print(test.shape)
     
     def split_train_test(self, X, y, test_size=0.2, random_state=42):
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
@@ -50,31 +26,6 @@ class DataTransformation:
         logger.info("Splited data into training and test sets")
 
         return X_train, X_test, y_train, y_test
-    
-    def create_pipeline(self):
-        numeric_features = ['passenger_count', 'trip_time_in_secs', 'trip_distance']
-        categorical_features = ['vendor_id', 'rate_code', 'payment_type']
-
-        numeric_transformer = Pipeline(steps=[
-            ('scaler', StandardScaler())
-        ])
-
-        categorical_transformer = Pipeline(steps=[
-            ('onehot', OneHotEncoder())
-        ])
-
-        preprocessor = ColumnTransformer(
-            transformers=[
-                ('num', numeric_transformer, numeric_features),
-                ('cat', categorical_transformer, categorical_features)
-            ])
-
-        model = Pipeline(steps=[
-            ('preprocessor', preprocessor),
-            # ('Random Forest', RandomForestRegressor())
-            ('regressor', SGDRegressor(max_iter=1000, tol=1e-3))
-        ])
-        return model
     
     def create_model_pipelines(self, preprocessor):
 
@@ -88,16 +39,54 @@ class DataTransformation:
             ('regressor', Ridge())
         ])
 
+        lasso_reg_pipeline = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('regressor', Lasso())
+        ])
+
+        sgd_reg_pipeline = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('regressor', SGDRegressor())
+        ])
+
+        elastic_net_pipeline = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('regressor', ElasticNet())
+        ])
+
         random_forest_pipeline = Pipeline(steps=[
             ('preprocessor', preprocessor),
             ('regressor', RandomForestRegressor())
         ])
 
-        return {
-            'Linear Regression': linear_reg_pipeline,
-            'Ridge Regression': ridge_reg_pipeline,
-            'Random Forest': random_forest_pipeline
+        gradient_boosting_reg_pipeline = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('regressor', GradientBoostingRegressor())
+        ])
+
+        svr_pipeline = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('regressor', SVR())
+        ])
+
+        knn_pipeline = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('regressor', KNeighborsRegressor())
+        ])
+
+        model_pipelines = {
+            'LinearRegression': linear_reg_pipeline,
+            'Ridge': ridge_reg_pipeline,
+            'Lasso': lasso_reg_pipeline,
+            'SGDRegressor': sgd_reg_pipeline,
+            'ElasticNet': elastic_net_pipeline,
+            'RandomForestRegressor': random_forest_pipeline,
+            'GradientBoostingRegressor': gradient_boosting_reg_pipeline,
+            'SVR': svr_pipeline,
+            'KNeighborsRegressor': knn_pipeline
         }
+
+        return model_pipelines
 
     def get_preprocessor(self, numeric_features, categorical_features):
         numeric_transformer = Pipeline(steps=[
@@ -113,3 +102,10 @@ class DataTransformation:
                 ('num', numeric_transformer, numeric_features),
                 ('cat', categorical_transformer, categorical_features)
             ])
+    
+    def get_model_name_and_params(self, model_name):
+
+        model = globals()[model_name]()
+        params = model.get_params()
+
+        return model, params

@@ -71,7 +71,7 @@ class ConfigurationManager:
     def get_model_trainer_config(self) -> ModelTrainerConfig:
         config = self.config.model_trainer
         params = self.params
-        schema =  self.schema.TARGET_COLUMN
+        schema =  self.schema
 
         create_directories([config.root_dir])
 
@@ -82,9 +82,8 @@ class ConfigurationManager:
             model_name = config.model_name,
             eval_root_dir = config.eval_root_dir,
             all_models_params = params,
-            # alpha = params.alpha,
-            # l1_ratio = params.l1_ratio,
-            target_column = schema.name
+            all_schema = schema,
+            target_column = schema.TARGET_COLUMN.name
             
         )
 

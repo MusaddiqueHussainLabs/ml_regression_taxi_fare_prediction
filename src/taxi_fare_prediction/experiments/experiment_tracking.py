@@ -1,5 +1,7 @@
 import mlflow
 from mlflow import MlflowClient
+from mlflow.models import infer_signature
+from urllib.parse import urlparse
 from pprint import pprint
 from sklearn.ensemble import RandomForestRegressor
 from taxi_fare_prediction.schemas.config_schema import ExperimentManagerConfig
@@ -46,7 +48,7 @@ class ExperimentManager:
 
         return taxi_fare_experiment
     
-    def run_experiment(self, model_name, X_test, model, params, metrics):
+    def run_experiment(self, model_name, X_test, y_pred, model, params, metrics):
 
         # Sets the current active experiment to the "taxi_fare_prediction" experiment and
         # returns the Experiment metadata
@@ -59,6 +61,8 @@ class ExperimentManager:
         # Define an artifact path that the model will be saved to.
         artifact_path = run_name
 
+        tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+
         # Initiate the MLflow run context
         with mlflow.start_run(run_name=run_name) as run:
             # Log the parameters used for the model fit
@@ -68,6 +72,23 @@ class ExperimentManager:
             mlflow.log_metrics(metrics)
 
             # Log an instance of the trained model for later use
-            mlflow.sklearn.log_model(
-                sk_model=model, input_example=X_test, artifact_path=artifact_path
-            )
+            signature = infer_signature(X_test, y_pred)
+
+            # Model registry does not work with file store
+            if tracking_url_type_store != "file":
+
+                # Register the model
+                # There are other ways to use the Model Registry, which depends on the use case,
+                # please refer to the doc for more information:
+                # https://mlflow.org/docs/latest/model-registry.html#api-workflow
+                
+                mlflow.sklearn.log_model(
+                    sk_model=model, input_example=X_test, artifact_path=artifact_path, signature=signature,
+                    registered_model_name=run_name
+                )
+            else:
+                mlflow.sklearn.log_model(
+                    sk_model=model, input_example=X_test, artifact_path=artifact_path, signature=signature
+                )
+
+            

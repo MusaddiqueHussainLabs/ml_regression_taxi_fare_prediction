@@ -130,3 +130,29 @@ def read_params_from_file(model_name):
     with open('src/taxi_fare_prediction/core/params.yaml', 'r') as file:
         params = yaml.safe_load(file)
     return params.get(model_name, {})
+
+@ensure_annotations
+def get_user_friendly_model_name(model_name):
+
+    if model_name == 'LinearRegression':
+        user_friendly_model_name = 'linear_regression'
+    elif model_name == 'Ridge':
+        user_friendly_model_name = 'ridge'
+    elif model_name == 'Lasso':
+        user_friendly_model_name = 'lasso'
+    elif model_name == 'RandomForestRegressor':
+        user_friendly_model_name = 'random_forest_regressor'
+    elif model_name == 'SGDRegressor':
+        user_friendly_model_name = 'sgd_regressor'
+    elif model_name == 'ElasticNet':
+        user_friendly_model_name = 'elastic_net'
+    elif model_name == 'GradientBoostingRegressor':
+        user_friendly_model_name = 'gradient_boosting_regressor'
+    elif model_name == 'SVR':
+        user_friendly_model_name = 'svr'
+    elif model_name == 'KNeighborsRegressor':
+        user_friendly_model_name = 'k_neighbors_regressor'
+    else:
+        user_friendly_model_name = model_name
+
+    return user_friendly_model_name

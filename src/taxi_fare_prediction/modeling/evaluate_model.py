@@ -20,7 +20,7 @@ class ModelEvaluation:
         self.config = config
 
     
-    def eval_metrics(self, model_name, actual, pred):
+    def eval_metrics(self, user_friendly_model_name, actual, pred):
         rmse = np.sqrt(mean_squared_error(actual, pred))
         mae = mean_absolute_error(actual, pred)
         mse = mean_squared_error(actual, pred)
@@ -28,57 +28,10 @@ class ModelEvaluation:
 
         # Update eval.json
         metrics = {"mae": mae, "mse": mse, "rmse": rmse, "r2": r2}
-        with open(f"{self.config.root_dir}/eval_{model_name}.json", "w") as json_file:
-            json.dump(metrics, json_file)
+
+        metric_file_path = Path(f"{self.config.root_dir}/eval_{user_friendly_model_name}.json")
+        save_json(metric_file_path, metrics)
 
         return ConfigBox(metrics)
-    
-
-    def log_into_mlflow(self):
-
-        config = ConfigurationManager()
-        data_preprocessing_config = config.get_data_preprocessing_config()
-        data_preprocessing = DataPreProcessing(config=data_preprocessing_config)
-
-        data = data_preprocessing.load_data()
-
-        columns_to_check = [self.config.target_column]
-        data = data_preprocessing.remove_outliers(data, columns_to_check)
-
-        X, y = data_preprocessing.split_X_y(data)
-        
-        model = joblib.load(self.config.model_path)
-        
-        mlflow.set_registry_uri(self.config.mlflow_uri)
-        tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
-
-
-        with mlflow.start_run():
-
-            predicted_qualities = model.predict(X)
-
-            (rmse, mae, r2) = self.eval_metrics(y, predicted_qualities)
-            
-            # Saving metrics as local
-            scores = {"rmse": rmse, "mae": mae, "r2": r2}
-            save_json(path=Path(self.config.metric_file_name), data=scores)
-
-            mlflow.log_params(self.config.all_params)
-
-            mlflow.log_metric("rmse", rmse)
-            mlflow.log_metric("r2", r2)
-            mlflow.log_metric("mae", mae)
-
-
-            # Model registry does not work with file store
-            if tracking_url_type_store != "file":
-
-                # Register the model
-                # There are other ways to use the Model Registry, which depends on the use case,
-                # please refer to the doc for more information:
-                # https://mlflow.org/docs/latest/model-registry.html#api-workflow
-                mlflow.sklearn.log_model(model, "model", registered_model_name="RandomForestRegressorModel")
-            else:
-                mlflow.sklearn.log_model(model, "model")
 
     
